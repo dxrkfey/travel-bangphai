@@ -1,12 +1,38 @@
+# Dependencies
 node_modules/
+
+# Nuxt output and caches
 .nuxt/
 .output/
-.sites-runtime/
-*.log
-.env
-
+.nitro/
+.data/
+.cache/
 dist/
-.openai/
-.vercel/
+coverage/
+*.tsbuildinfo
+
+# Local environment files (keep the example available)
+.env
 .env.*
 !.env.example
+
+# Local hosting and deployment state
+.sites-runtime/
+.openai/
+.vercel/
+
+# Logs and process files
+*.log
+logs/
+*.pid
+*.pid.lock
+
+# Editor and operating system files
+.vscode/
+.idea/
+*.code-workspace
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+Desktop.ini
