@@ -29,9 +29,12 @@ Workflow `.github/workflows/github-pages.yml` จะตรวจ TypeScript ส�
 ## แก้ไขข้อมูล
 
 - `app/data/places.ts` ข้อมูลจุดแวะและแหล่งอ้างอิง
+- `app/data/shops.ts` รายชื่อร้าน แบ่งโซน และแหล่งอ้างอิงรายร้าน
+- `app/components/ShopDirectory.vue` รายชื่อร้านพร้อมค้นหาและตัวกรอง
 - `app/pages/index.vue` หน้าแรกและตัวจัดแพลน
 - `app/pages/places/[slug].vue` หน้ารายละเอียด
 - `app/assets/css/main.css` สไตล์ responsive
+- `app/assets/css/typography.css` ขนาดตัวหนังสือสำหรับเดสก์ท็อปและมือถือ
 
 การบันทึกแพลนใช้ localStorage บนเครื่องผู้ใช้ แชร์แพลนด้วย URL parameters ไม่ต้องมีบัญชีหรือฐานข้อมูล งบและเวลาเป็นคำแนะนำสำหรับจัดทริปเอง ไม่ใช่แพ็กเกจหรือราคาจากร้าน
 

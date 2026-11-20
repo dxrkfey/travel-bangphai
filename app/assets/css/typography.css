@@ -1,0 +1,37 @@
+/* Compact type scale; touch target sizes remain independent of text size. */
+body { font-size: 15px; }
+.brand { font-size: 22px; }
+.hero h1 { font-size: clamp(40px, 4.2vw, 56px); }
+.hero-sun { font-size: 36px; }
+h2, .section-heading h2 { font-size: clamp(26px, 2.6vw, 34px); }
+.hero-description { font-size: 15px; }
+.section-heading > p, .travel-copy > p:not(.eyebrow) { font-size: 14px; }
+.planner-label h3 { font-size: 16px; }
+.itinerary-heading h3 { font-size: 19px; }
+.detail-copy h1 { font-size: 32px; }
+.detail-subtitle { font-size: 16px; }
+.closing p { font-size: 20px; }
+@media (max-width: 767px) {
+  body { font-size: 14px; }
+  .brand { font-size: 20px; }
+  .hero h1 { font-size: clamp(32px, 9vw, 44px); line-height: 1.5; }
+  .hero-sun { font-size: 28px; }
+  .hero-description { font-size: 14px; line-height: 1.85; }
+  h2, .section-heading h2, .travel-copy h2, .faq-grid h2 { font-size: clamp(25px, 6.5vw, 29px); }
+  .hero-location, .section-heading > p, .strip-inner strong, .strip-inner > p strong, .place-card p,
+  .interest-options > button, .duration-options strong, .itinerary-stop p, .plan-buttons .button,
+  .travel-copy > p:not(.eyebrow), .transport-line p, .travel-facts p, .travel-callout p,
+  .faq-grid > div > p:last-child, .faq-list summary, .faq-list details p, .dialog-inner > p:not(.eyebrow),
+  .saved-summary strong, .saved-summary p, .detail-tip p, .detail-duration,
+  .detail-copy > p:not(.eyebrow):not(.detail-subtitle):not(.detail-meta), .more-links a { font-size: 14px; }
+  .planner-label h3, .itinerary-stop a, .travel-facts h3, .place-card h3 { font-size: 16px; }
+  .duration-options span, .itinerary-stop time, .budget-note > span, .budget-note > p, .tiny-tip,
+  .itinerary-footer > p, .stop-count, .source-link { font-size: 13px; }
+  .itinerary-heading h3 { font-size: 18px; }
+  .budget-note > strong { font-size: 26px; }
+  .transport-line h3 { font-size: 18px; }
+  .detail-copy h1 { font-size: clamp(25px, 6.8vw, 30px); }
+  .detail-subtitle { font-size: 15px; }
+  .closing p { font-size: 16px; }
+  .more-stops h2 { font-size: 25px; }
+}

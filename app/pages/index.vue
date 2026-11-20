@@ -1,14 +1,11 @@
 <script setup lang="ts">
 import { MapPin, Clock3, TrainFront, Coffee, Palette, Footprints, Bookmark, Check, X, Share2, Leaf, ChevronDown, Navigation, Sun, Heart, Ticket, CalendarDays, Sparkles } from '@lucide/vue'
-import { places, zones, mapsUrl, placeImageAlt } from '~/data/places'
+import { places, mapsUrl } from '~/data/places'
 const { asset, absoluteAsset } = useSiteUrls()
 
 type Duration = 'half' | 'full'
 type Interest = 'chill' | 'art'
 interface SavedPlan { duration: Duration; interest: Interest }
-const category = ref('ทั้งหมด')
-const categories = ['ทั้งหมด', ...zones.map(zone => zone.title)]
-const visibleZones = computed(() => zones.filter(zone => category.value === 'ทั้งหมด' || zone.title === category.value).map(zone => ({ ...zone, places: places.filter(place => (zone.slugs as readonly string[]).includes(place.slug)) })))
 const nearbyPlaces = places.filter(place => place.slug === 'artist-house' || place.slug === 'canal-walk')
 const duration = ref<Duration>('full')
 const interest = ref<Interest>('chill')
@@ -85,14 +82,8 @@ useSeoMeta({ ogTitle: 'บางหลวง วันว่าง | วัน�
       <section class="intro-strip"><div class="shell strip-inner"><p>ไม่ต้องลางาน ไม่ต้องจัดกระเป๋า<br><strong>แค่พาตัวเองออกมาเจออะไรน่ารัก ๆ</strong></p><div><TrainFront /><span><strong>MRT บางไผ่</strong><small>สายสีน้ำเงิน · ทางออก 4</small></span></div><div><Clock3 /><span><strong>ครึ่งวันก็เที่ยวได้</strong><small>เลือกจังหวะที่พอดีกับเรา</small></span></div><div><Palette /><span><strong>ศิลปะ & วิถีริมคลอง</strong><small>ของธรรมดาที่ทำให้วันพิเศษ</small></span></div></div></section>
 
       <section id="places" class="section shell">
-        <div class="section-heading"><div><p class="eyebrow">LITTLE PLACES, LOVELY MOMENTS</p><h2>แวะตรงไหนดี<span class="orange">?</span></h2></div><p>ไม่ต้องเก็บให้ครบทุกจุด<br>แค่เลือกที่ที่ทำให้เราอยากอยู่นานขึ้น</p></div>
-        <div class="filter-row" aria-label="เลือกโซนเที่ยว"><button v-for="item in categories" :key="item" class="filter-chip" :class="{ active: category === item }" :aria-pressed="category === item" @click="category = item">{{ item }}</button><span class="filter-count" aria-live="polite">{{ visibleZones.length }} โซนวันว่าง</span></div>
-        <div class="zone-list" aria-live="polite">
-          <section v-for="zone in visibleZones" :id="`zone-${zone.id}`" :key="zone.id" class="travel-zone" :aria-labelledby="`zone-title-${zone.id}`">
-            <div class="zone-heading"><span class="zone-icon"><Coffee v-if="zone.id === 'cafe'" :size="23" /><Palette v-else-if="zone.id === 'workshop'" :size="23" /><Ticket v-else :size="23" /></span><div><p class="eyebrow">{{ zone.english }}</p><h3 :id="`zone-title-${zone.id}`">โซน{{ zone.title }}</h3><p class="zone-description">{{ zone.description }}</p></div></div>
-            <div class="zone-places"><NuxtLink v-for="place in zone.places" :key="place.slug" :to="`/places/${place.slug}`" class="place-card"><div class="place-image-wrap"><img :src="asset(place.image)" :alt="placeImageAlt(place)" loading="lazy" width="600" height="450" /><span class="place-tag">{{ place.category }}</span><span v-if="zone.id === 'food'" class="illustration-label">ภาพประกอบ</span></div><div class="place-card-content"><h3>{{ place.title }}</h3><p>{{ place.subtitle }}</p><span class="place-duration"><Clock3 :size="14" /> {{ place.duration }}</span><span class="zone-place-detail">ดูรายละเอียดและพิกัด</span></div></NuxtLink></div>
-          </section>
-        </div>
+        <div class="section-heading"><div><p class="eyebrow">LITTLE PLACES, LOVELY MOMENTS</p><h2>รายชื่อร้าน<span class="orange">ทั้งหมด</span></h2></div><p>เลือกโซนที่ชอบ หรือค้นหาชื่อร้าน<br>แล้วปักหมุดวันว่างของคุณ</p></div>
+        <ShopDirectory />
         <aside class="between-zones"><p><Footprints :size="18" /> เดินเล่นระหว่างโซน</p><div><NuxtLink v-for="place in nearbyPlaces" :key="place.slug" :to="`/places/${place.slug}`"><MapPin :size="16" />{{ place.title }}</NuxtLink></div></aside>
       </section>
 

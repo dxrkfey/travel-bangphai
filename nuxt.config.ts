@@ -5,7 +5,7 @@ export default defineNuxtConfig({
   compatibilityDate: '2026-11-20',
   devtools: { enabled: false },
   runtimeConfig: { public: { siteOrigin: 'https://dxrkfey.github.io' } },
-  css: ['~/assets/css/main.css', '~/assets/css/mobile.css', '~/assets/css/zones.css'],
+  css: ['~/assets/css/main.css', '~/assets/css/mobile.css', '~/assets/css/zones.css', '~/assets/css/directory.css', '~/assets/css/typography.css'],
   vite: { plugins: [tailwindcss()], optimizeDeps: { include: ['@lucide/vue'] } },
   app: {
     baseURL: env.NUXT_APP_BASE_URL || '/',
