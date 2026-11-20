@@ -1,0 +1,21 @@
+.auto-plan-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 13px; margin-top: 25px; }
+.auto-plan-fields label { display: flex; flex-direction: column; gap: 7px; font-size: 14px; color: #465d3d; }
+.auto-plan-fields select { appearance: none; min-width: 0; min-height: 48px; font: inherit; font-size: 14px; color: var(--green); border: 1px solid #b6c5a9; border-radius: 7px; padding: 10px 34px 10px 13px; background: #fcfcf8 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%231c5144' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 12px center; }
+.auto-plan-fields select:focus-visible { outline: 2px solid var(--orange); outline-offset: 3px; }
+.auto-generate { width: 100%; min-height: 50px; margin-top: 22px; font-size: 15px; }
+.auto-plan-help { margin-top: 12px; color: #596851; font-size: 13px; line-height: 1.9; }
+.auto-plan-summary { font-size: 13px; line-height: 1.9; margin-top: 8px; color: #596851; }
+.auto-plan-dirty { padding: 13px 19px; font-size: 14px; line-height: 1.8; color: #7f5327; background: #f3ead3; border-bottom: 1px solid #e7d7b3; }
+.auto-stop-title { display: block; font-size: 16px; font-weight: 500; line-height: 1.8; }
+.auto-stop-meta { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 12px; color: #596851; margin-top: 8px; }
+.auto-stop-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 3px; }
+.auto-stop-actions a, .auto-stop-actions button { display: inline-flex; align-items: center; justify-content: center; gap: 5px; min-height: 44px; padding: 7px 3px; font-size: 13px; background: transparent; color: var(--green); }
+.auto-planner .itinerary-stop .auto-stop-actions a { font-size: 13px; font-weight: 400; }
+.auto-stop-actions button { text-decoration: underline; text-underline-offset: 4px; }
+.auto-plan-notes { margin: 0 0 16px; padding: 13px 14px 13px 28px; background: #f1eddd; color: #74643b; border-radius: 7px; font-size: 13px; line-height: 1.9; list-style: disc; }
+.auto-plan-notes li + li { margin-top: 6px; }
+.auto-planner .itinerary-footer > .auto-plan-disclaimer { display: block; font-size: 12px; line-height: 1.9; }
+.auto-planner button:disabled { opacity: .45; cursor: not-allowed; transform: none; }
+.auto-share-fallback { display: block; margin-top: 16px; font-size: 13px; }
+.auto-share-fallback input { width: 100%; margin-top: 7px; min-height: 44px; padding: 10px; border: 1px solid #b6c5a9; border-radius: 6px; background: #fff; font-size: 14px; }
+@media (max-width: 767px) { .auto-planner .planner-grid { gap: 25px; } .auto-generate { font-size: 14px; } .auto-stop-title { font-size: 16px; } .auto-stop-meta { font-size: 12px; } .auto-planner .itinerary-stop p { font-size: 14px; } .auto-plan-summary { font-size: 13px; } .auto-planner .itinerary-heading { padding-inline: 17px; flex-wrap: wrap; } .auto-plan-fields { gap: 11px; } }

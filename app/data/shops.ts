@@ -8,6 +8,7 @@ export interface Shop {
   source: string
   sourceName: string
   detail?: string
+  foodType?: 'meal' | 'snack'
 }
 
 const marketGuide = 'https://super.co.th/review/review-khlong-bang-luang/'

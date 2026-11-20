@@ -28,6 +28,7 @@ jobs:
         id: pages
       - run: npm ci
       - run: npm run typecheck
+      - run: npm test
       - run: npm run build
         env:
           NUXT_APP_BASE_URL: ${{ steps.pages.outputs.base_path }}/

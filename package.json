@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "nuxt dev --host 127.0.0.1",
     "build": "nuxt generate",
+    "test": "node --test tests/planner.test.mjs",
     "postinstall": "nuxt prepare",
     "typecheck": "nuxt typecheck"
   },
