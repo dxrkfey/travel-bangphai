@@ -122,3 +122,13 @@ button.auto-stop-link strong { text-decoration: underline; text-decoration-color
 .stop-editor-actions .edit-plan-button { margin-left: auto; }
 .detail-sheet-copy h3:focus { outline: none; }
 .nowrap { white-space: nowrap; }
+
+/* iOS Safari gives date/time inputs an intrinsic min width that ignores width:100%,
+   so the time field overlapped the budget field. Let the columns shrink and draw the
+   field ourselves; tapping still opens the native time picker. */
+.auto-plan-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.auto-plan-fields > label { min-width: 0; overflow: hidden; }
+.auto-plan-fields input { display: block; max-width: 100%; box-sizing: border-box; }
+.auto-plan-fields input[type="time"] { -webkit-appearance: none; appearance: none; height: 48px; min-height: 48px; line-height: 1.5; text-align: left; background-color: #fff; }
+.auto-plan-fields input[type="time"]::-webkit-date-and-time-value { margin: 0; text-align: left; }
+.auto-plan-fields input[type="number"] { height: 48px; min-height: 48px; }
