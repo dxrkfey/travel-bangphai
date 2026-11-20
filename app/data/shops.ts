@@ -9,7 +9,9 @@ export interface Shop {
   summary: string
   source: string
   sourceName: string
-  detail?: string
+  description?: string
+  tip?: string
+  duration?: string
   foodType?: 'meal' | 'snack'
   image: string
   photoSource: string
@@ -27,7 +29,7 @@ export const shopZones = [
 
 // One entry per business; activities and cafe corners are not counted as separate shops.
 const shopEntries: readonly Omit<Shop, 'image' | 'photoSource' | 'photoCredit'>[] = [
-  { id: 'khun-aoi', name: 'ครัวคุณอ๋อย', zone: 'food', summary: 'อาหารไทย จานเดียว และกับข้าว', source: 'https://www.wongnai.com/articles/khun-aoi-kitchen-gsb', sourceName: 'Wongnai · สัมภาษณ์ร้าน', detail: '/places/khun-aoi-kitchen' },
+  { id: 'khun-aoi', name: 'ครัวคุณอ๋อย', zone: 'food', summary: 'อาหารไทย จานเดียว และกับข้าว', source: 'https://www.wongnai.com/articles/khun-aoi-kitchen-gsb', sourceName: 'Wongnai · สัมภาษณ์ร้าน', duration: '45–60 นาที', description: 'แวะพักกินข้าวที่ครัวคุณอ๋อย ร้านอาหารในย่านคลองบางหลวง มีทั้งอาหารจานเดียวและกับข้าวให้เลือก เหมาะกับการเผื่อเวลาเป็นมื้อกลางวันระหว่างเดินเที่ยวชุมชน', tip: 'ตรวจสอบเวลาเปิด เมนู และราคากับร้านก่อนเดินทาง' },
   { id: 'plern-jitt', name: 'บ้านเพลินจิตต์ ณ คลองบางหลวง', zone: 'food', summary: 'ผัดไทยและขนมไทย', source: 'https://www.ryoiireview.com/restaurant/view/19967', sourceName: 'Ryoii · ข้อมูลร้าน' },
   { id: 'jan-dara', name: 'ก๋วยเตี๋ยวจานดารา', zone: 'food', summary: 'ก๋วยเตี๋ยวน้ำตก', ...marketSource },
   { id: 'meow-meow-roll', name: 'Meow Meow Roll', zone: 'food', summary: 'ขนมโตเกียวไส้คาวและหวาน', ...marketSource },
@@ -42,7 +44,7 @@ const shopEntries: readonly Omit<Shop, 'image' | 'photoSource' | 'photoCredit'>[
   { id: 'phrao-hom', name: 'บ้านพร้าวหอม', zone: 'cafe', summary: 'เครื่องดื่มมะพร้าวและผลไม้', ...marketSource },
   { id: 'yen-lamoon', name: 'เย็นละมุน', zone: 'cafe', summary: 'เครื่องดื่มและมัทฉะ', ...marketSource },
   { id: 'lung-tong', name: 'ลุงโต้งกาแฟสด', zone: 'cafe', summary: 'ร้านกาแฟสดในชุมชน', ...marketSource },
-  { id: 'artist-house', name: 'บ้านศิลปินคลองบางหลวง', zone: 'workshop', summary: 'ร้อยลูกปัด วาดภาพ และมีมุมคาเฟ่', source: 'https://www.artisthousebangkok.com/th/art-workshop', sourceName: 'เว็บไซต์บ้านศิลปิน', detail: '/places/artist-house' },
+  { id: 'artist-house', name: 'บ้านศิลปินคลองบางหลวง', zone: 'workshop', summary: 'ร้อยลูกปัด วาดภาพ และมีมุมคาเฟ่', source: 'https://www.artisthousebangkok.com/th/art-workshop', sourceName: 'เว็บไซต์บ้านศิลปิน', duration: '60–120 นาที', description: 'บ้านไม้เก่าริมคลองที่เป็นพื้นที่พบปะของคนรักศิลปะ เลือกสีลูกปัดแล้วร้อยเป็นสร้อย วาดภาพบนผ้าใบ เขียนโปสการ์ด หรือนั่งพักที่มุมคาเฟ่มองเรือที่ผ่านไป', tip: 'เปิดทุกวัน 10.00–18.00 น. กิจกรรมแต่ละประเภทมีค่าใช้จ่ายแยก สอบถามราคาและที่นั่งก่อนเริ่ม โดยเฉพาะวันหยุด' },
   { id: 'phueng-sin', name: 'บ้านพึ่งศิลป์', zone: 'workshop', summary: 'งานเพนต์ ร้อยลูกปัด และเครื่องดื่ม', source: 'https://travel.trueid.net/detail/6pOxrAK1GgYJ', sourceName: 'TrueID · เที่ยวคลองบางหลวง' }
 ]
 

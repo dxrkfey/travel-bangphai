@@ -196,7 +196,7 @@ export function buildTripPlan(input: PlanState, available: readonly Shop[]): Tri
       id, kind: slot.kind, minutes: slot.minutes, start: cursor, end: cursor + slot.minutes, allowance: 0,
       title: shop?.name || (index === 0 ? 'เดินเล่นทำความรู้จักชุมชน' : 'เดินชมบ้านไม้และเลือกของฝาก'),
       description: shop?.summary || 'ค่อย ๆ เดินเลียบคลอง เก็บบรรยากาศ และเผื่อเวลาพักตามสบาย',
-      shopId: shop?.id, detail: shop?.detail || (slot.kind === 'walk' ? '/places/canal-walk' : undefined),
+      shopId: shop?.id, detail: slot.kind === 'walk' ? '/places/canal-walk' : undefined,
       mapQuery: shop ? `${shop.name} คลองบางหลวง` : 'ตลาดคลองบางหลวง'
     })
     cursor += slot.minutes
@@ -239,7 +239,7 @@ function buildCustomPlan(state: PlanState, available: readonly Shop[]): TripPlan
     if (item.shopId && !shop) { notes.push('มีร้านที่ไม่อยู่ในรายชื่อปัจจุบัน กรุณาเลือกร้านใหม่'); continue }
     if (stops.length) cursor += state.options.travelMinutes
     const kind = shop ? kindForShop(shop) : item.kind
-    stops.push({ id: item.id, kind, shopId: shop?.id, title: shop?.name || item.title || 'กิจกรรมของฉัน', description: shop?.summary || item.description || 'กิจกรรมและเวลาที่คุณกำหนดเอง', detail: shop?.detail || (!shop ? item.detail : undefined), mapQuery: shop ? `${shop.name} คลองบางหลวง` : item.mapQuery || 'คลองบางหลวง', start: cursor, end: cursor + item.minutes, minutes: item.minutes, allowance: item.allowance || 0 })
+    stops.push({ id: item.id, kind, shopId: shop?.id, title: shop?.name || item.title || 'กิจกรรมของฉัน', description: shop?.summary || item.description || 'กิจกรรมและเวลาที่คุณกำหนดเอง', detail: shop ? undefined : item.detail, mapQuery: shop ? `${shop.name} คลองบางหลวง` : item.mapQuery || 'คลองบางหลวง', start: cursor, end: cursor + item.minutes, minutes: item.minutes, allowance: item.allowance || 0 })
     if (item.allowance !== undefined) explicit.set(item.id, item.allowance)
     cursor += item.minutes
   }

@@ -5,7 +5,9 @@ export default defineNuxtConfig({
   compatibilityDate: '2026-11-20',
   devtools: { enabled: false },
   runtimeConfig: { public: { siteOrigin: 'https://dxrkfey.github.io' } },
-  css: ['~/assets/css/main.css', '~/assets/css/mobile.css', '~/assets/css/zones.css', '~/assets/css/directory.css', '~/assets/css/typography.css', '~/assets/css/auto-planner.css', '~/assets/css/ux.css'],
+  css: ['~/assets/css/main.css', '~/assets/css/mobile.css', '~/assets/css/zones.css', '~/assets/css/directory.css', '~/assets/css/typography.css', '~/assets/css/auto-planner.css', '~/assets/css/ux.css', '~/assets/css/refine.css'],
+  // Old detail pages are kept only as redirects to the home-page popup.
+  nitro: { prerender: { routes: ['khun-aoi-kitchen', 'artist-house', 'bead-workshop', 'canal-cafe', 'canal-walk'].map(slug => `/places/${slug}`) } },
   vite: { plugins: [tailwindcss()], optimizeDeps: { include: ['@lucide/vue'] } },
   app: {
     baseURL: env.NUXT_APP_BASE_URL || '/',

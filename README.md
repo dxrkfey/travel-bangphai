@@ -29,13 +29,16 @@ Workflow `.github/workflows/github-pages.yml` จะตรวจ TypeScript ส�
 
 ## แก้ไขข้อมูล
 
-- `app/data/places.ts` ข้อมูลจุดแวะและแหล่งอ้างอิง
+- `app/data/places.ts` จุดเดินเล่นริมคลอง ลิงก์แผนที่ และการพาลิงก์หน้าเดิมไปยังป๊อปอัป
 - `app/data/shops.ts` รายชื่อร้าน แบ่งโซน และแหล่งอ้างอิงรายร้าน
-- `app/components/ShopDirectory.vue` รายชื่อร้านพร้อมค้นหาและตัวกรอง
+- `app/data/shops.ts` รายละเอียดเพิ่มเติมของร้าน (`description`, `tip`, `duration`) แสดงในป๊อปอัป
+- `app/components/ShopDirectory.vue` รายชื่อร้านพร้อมค้นหาและตัวกรอง แตะร้านเพื่อดูรายละเอียด
+- `app/components/ShopDetailSheet.vue` ป๊อปอัปรายละเอียดร้าน (บนมือถือเป็น bottom sheet)
 - `app/pages/index.vue` หน้าแรกและตัวจัดแพลน
-- `app/pages/places/[slug].vue` หน้ารายละเอียด
+- `app/pages/places/[slug].vue` ลิงก์หน้าเดิม `/places/...` จะพากลับหน้าหลักแล้วเปิดป๊อปอัปของร้านนั้น
 - `app/assets/css/main.css` สไตล์ responsive
 - `app/assets/css/typography.css` ขนาดตัวหนังสือสำหรับเดสก์ท็อปและมือถือ
+- `app/assets/css/refine.css` สไตล์ป๊อปอัป bottom sheet และแพลนบนมือถือ (โหลดเป็นไฟล์สุดท้าย)
 
 การบันทึกแพลนใช้ localStorage บนเครื่องผู้ใช้ แชร์แพลนด้วย URL parameters ไม่ต้องมีบัญชีหรือฐานข้อมูล งบและเวลาเป็นคำแนะนำสำหรับจัดทริปเอง ไม่ใช่แพ็กเกจหรือราคาจากร้าน
 
