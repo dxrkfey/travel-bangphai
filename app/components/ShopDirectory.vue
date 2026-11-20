@@ -4,6 +4,8 @@ import { shops, shopZones, type Shop, type ShopZone } from '~/data/shops'
 import { mapsUrl } from '~/data/places'
 
 const query = ref('')
+const props = withDefaults(defineProps<{ selectedShopIds?: string[] }>(), { selectedShopIds: () => [] })
+const emit = defineEmits<{ addShop: [shopId: string] }>()
 const { asset } = useSiteUrls()
 const photoDialog = ref<HTMLDialogElement | null>(null)
 const selectedPhoto = ref<Shop | null>(null)
@@ -35,7 +37,7 @@ function clearFilters() { query.value = ''; selectedZone.value = 'all' }
         <ul class="shop-list">
           <li v-for="shop in zone.shops" :key="shop.id" class="shop-row">
             <button class="shop-photo" :aria-label="`ดูรูป ${shop.name}`" @click="openPhoto(shop)"><img :src="asset(shop.image)" :alt="`ภาพร้านหรือเมนูของ ${shop.name}`" :title="`ภาพ: ${shop.photoCredit}`" loading="lazy" decoding="async" width="192" height="192" /><span>ดูรูป</span></button>
-            <div class="shop-row-content"><div class="shop-row-copy"><h4><NuxtLink v-if="shop.detail" :to="shop.detail">{{ shop.name }}</NuxtLink><span v-else>{{ shop.name }}</span></h4><p>{{ shop.summary }}</p></div><div class="shop-row-actions"><a :href="mapsUrl(`${shop.name} คลองบางหลวง`)" class="shop-map-link" target="_blank" rel="noopener noreferrer" :aria-label="`เปิดแผนที่ ${shop.name}`"><MapPin :size="16" aria-hidden="true" />แผนที่</a><a :href="shop.source" class="shop-source-link" target="_blank" rel="noopener noreferrer" :aria-label="`ข้อมูล ${shop.name} จาก ${shop.sourceName}`"><BookOpen :size="14" aria-hidden="true" />ข้อมูลร้าน</a></div></div>
+            <div class="shop-row-content"><div class="shop-row-copy"><h4><NuxtLink v-if="shop.detail" :to="shop.detail">{{ shop.name }}</NuxtLink><span v-else>{{ shop.name }}</span></h4><p>{{ shop.summary }}</p></div><div class="shop-row-actions"><a :href="mapsUrl(`${shop.name} คลองบางหลวง`)" class="shop-map-link" target="_blank" rel="noopener noreferrer" :aria-label="`เปิดแผนที่ ${shop.name}`"><MapPin :size="16" aria-hidden="true" />แผนที่</a><a :href="shop.source" class="shop-source-link" target="_blank" rel="noopener noreferrer" :aria-label="`ข้อมูล ${shop.name} จาก ${shop.sourceName}`"><BookOpen :size="14" aria-hidden="true" />ข้อมูลร้าน</a><button class="directory-add" :aria-label="`เพิ่ม ${shop.name} ในทริป`" @click="emit('addShop', shop.id)">{{ props.selectedShopIds.includes(shop.id) ? 'เพิ่มแวะซ้ำ' : 'เพิ่มในทริป' }}</button></div></div>
           </li>
         </ul>
       </section>

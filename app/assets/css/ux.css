@@ -78,3 +78,26 @@
   .shop-choice-copy strong { font-size: 14px; }
   .planner-extra summary { flex-wrap: wrap; padding-block: 6px; }
 }
+.free-plan-title { font-size: 18px; font-weight: 500; }
+.free-plan-fields { margin-top: 22px; }
+.auto-plan-fields label { min-width: 0; }
+.auto-plan-fields input, .suggestion-fields select, .shop-picker-filters > input { width: 100%; min-width: 0; min-height: 44px; padding: 10px; border: 1px solid #b6c5a9; border-radius: 7px; color: var(--green); background: #fff; font: inherit; font-size: 16px; }
+.auto-plan-fields input:focus-visible, .suggestion-fields select:focus-visible, .shop-picker-filters > input:focus-visible { outline: 2px solid var(--orange); outline-offset: 2px; }
+.full-field { grid-column: 1 / -1; }
+.suggestion-fields { display: grid; gap: 14px; padding-bottom: 15px; }
+.suggestion-fields label { display: grid; gap: 7px; font-size: 14px; }
+.suggestion-fields select { appearance: none; padding-right: 32px; background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%231c5144' stroke-width='2'%3E%3Cpath d='m4 6 4 4 4-4'/%3E%3C/svg%3E") no-repeat right 10px center; }
+.editable-stop { min-width: 0; }
+.stop-editor { margin-top: 5px; padding: 0 10px; border: 1px solid #d4dfc9; border-radius: 7px; }
+.stop-editor summary { min-height: 44px; padding: 11px 0; cursor: pointer; font-size: 14px; }
+.stop-editor .auto-plan-fields { margin: 0 0 12px; gap: 9px; }
+.stop-order-actions { display: flex; flex-wrap: wrap; gap: 4px 12px; margin-top: 5px; }
+.stop-order-actions button { min-height: 44px; padding: 7px 0; font-size: 13px; color: var(--green); background: none; }
+.stop-order-actions .remove-stop { color: #99442b; margin-left: auto; }
+.free-plan-add { display: flex; flex-wrap: wrap; gap: 10px; padding: 18px; border-top: 1px solid #d4dfc9; }
+.free-plan-add .button { flex: 1; padding-inline: 10px; min-height: 44px; font-size: 14px; white-space: nowrap; }
+.empty-stops { padding: 20px; font-size: 14px; line-height: 1.9; color: #596851; }
+.shop-picker-filters { padding: 15px 18px 0; }
+.shop-picker-filters .filter-row { margin-block: 12px 6px; gap: 7px; flex-wrap: wrap; }
+.shop-directory .directory-add { min-height: 44px; padding: 7px 10px; font-size: 13px; background: #eaf1e1; color: var(--green); border: 1px solid #c5d0b9; border-radius: 6px; }
+@media (max-width: 359px) { .stop-editor .auto-plan-fields { grid-template-columns: 1fr; } .free-plan-add { flex-direction: column; } }

@@ -4,9 +4,9 @@ import { places, mapsUrl } from '~/data/places'
 const { asset, absoluteAsset } = useSiteUrls()
 const nearbyPlaces = places.filter(place => place.slug === 'artist-house' || place.slug === 'canal-walk')
 const hasSaved = ref(false)
-const tripPlanner = ref<{ openSaved: () => void } | null>(null)
+const tripPlanner = ref<{ openSaved: () => void; addShop: (shopId: string) => void; selectedShopIds: string[] } | null>(null)
 function showSaved() { tripPlanner.value?.openSaved() }
-useSeoMeta({ ogTitle: 'บางหลวง วันว่าง | วันดี ๆ ไม่ต้องไปไกล', ogDescription: 'เดินเล่น ทำงานคราฟต์ จิบกาแฟ ให้ระบบจัดแพลนคลองบางหลวงตามเวลาและสไตล์ที่ชอบ', ogImage: absoluteAsset('/images/canal.jpg'), twitterCard: 'summary_large_image' })
+useSeoMeta({ ogTitle: 'บางหลวง วันว่าง | วันดี ๆ ไม่ต้องไปไกล', ogDescription: 'เลือกร้านและจัดทริปคลองบางหลวงด้วยตัวเอง เพิ่ม ลบ สลับลำดับ และปรับเวลาได้ตามใจ', ogImage: absoluteAsset('/images/canal.jpg'), twitterCard: 'summary_large_image' })
 </script>
 
 <template>
@@ -20,7 +20,7 @@ useSeoMeta({ ogTitle: 'บางหลวง วันว่าง | วัน�
           <h1>วันดี ๆ<br>ไม่ต้อง<span class="serif-accent">ไปไกล</span><Asterisk class="hero-sun" :size="36" :stroke-width="1.4" aria-hidden="true" focusable="false" /></h1>
           <p class="hero-location"><MapPin :size="19" /> คลองบางหลวง · กรุงเทพฯ</p>
           <p class="hero-description">ชวนมาพักใจในชุมชนเล็ก ๆ ริมคลอง<br>เดินเล่น ทำงานคราฟต์ จิบกาแฟ<br>แล้วปล่อยให้วันว่าง… เดินช้าลงหน่อย</p>
-          <div class="hero-buttons"><a class="button button-primary" href="#planner"><CalendarDays :size="18" />จัดทริปให้ฉัน</a><a href="#places" class="text-link">ดูร้านทั้งหมด</a></div>
+          <div class="hero-buttons"><a class="button button-primary" href="#planner"><CalendarDays :size="18" />จัดทริปของฉัน</a><a href="#places" class="text-link">ดูร้านทั้งหมด</a></div>
           <div class="hero-note"><Leaf :size="15" /> เที่ยวง่ายด้วย MRT · ใช้เวลาแค่ครึ่งวันก็ได้</div>
         </div>
         <div class="hero-visual">
@@ -37,7 +37,7 @@ useSeoMeta({ ogTitle: 'บางหลวง วันว่าง | วัน�
 
       <section id="places" class="section shell">
         <div class="section-heading"><div><p class="eyebrow">LITTLE PLACES, LOVELY MOMENTS</p><h2>รายชื่อร้าน<span class="orange">ทั้งหมด</span></h2></div><p>เลือกโซนที่ชอบ หรือค้นหาชื่อร้าน<br>แล้วปักหมุดวันว่างของคุณ</p></div>
-        <ShopDirectory />
+        <ShopDirectory :selected-shop-ids="tripPlanner?.selectedShopIds || []" @add-shop="tripPlanner?.addShop($event)" />
         <aside class="between-zones"><p><Footprints :size="18" /> เดินเล่นระหว่างโซน</p><div><NuxtLink v-for="place in nearbyPlaces" :key="place.slug" :to="`/places/${place.slug}`"><MapPin :size="16" />{{ place.title }}</NuxtLink></div></aside>
       </section>
 

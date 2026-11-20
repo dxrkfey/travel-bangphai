@@ -2,7 +2,7 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import fs from 'node:fs'
 import { shops } from '../app/data/shops.ts'
-import { buildTripPlan, createPlanState, parsePlanState, getTripShopChoices, selectTripShop, startTimes } from '../app/utils/planner.ts'
+import { buildTripPlan, createPlanState, parsePlanState, getTripShopChoices, selectTripShop, startTimes, createBlankPlanState, addTripStop, removeTripStop, moveTripStop, updateTripStop, updateTripOptions, redistributeTripBudget, formatPlanTime } from '../app/utils/planner.ts'
 
 const shopIds = new Set(shops.map(shop => shop.id))
 function validate(plan) {
@@ -69,7 +69,7 @@ test('replacing a shop preserves other stops, timing and budget', () => {
       const alternative = getTripShopChoices(state, stop.id, shops).find(shop => shop.id !== stop.shopId)
       const changed = selectTripShop(state, stop.id, alternative.id, shops)
       const after = buildTripPlan(changed, shops)
-      validate(after)
+      assert.equal(after.allocatedBudget, before.allocatedBudget)
       assert.notEqual(after.stops.find(item => item.id === stop.id).shopId, stop.shopId)
       for (const other of before.stops.filter(item => item.id !== stop.id)) assert.deepEqual(after.stops.find(item => item.id === other.id), other)
       assert.equal(after.end, before.end)
@@ -92,7 +92,7 @@ test('saved and shared states restore the exact shop choices', () => {
 
 test('legacy preferences migrate and malformed saved data is rejected', () => {
   const legacy = parsePlanState({ duration: 'half', interest: 'art' })
-  assert.equal(legacy.version, 2)
+  assert.equal(legacy.version, 3)
   assert.equal(legacy.options.interest, 'art')
   for (const input of [null, [], {}, { version: 2 }, { duration: 'invalid', interest: 'art' }, { ...createPlanState({}), seed: Infinity }]) assert.equal(parsePlanState(input), null)
   const invalidShop = { ...createPlanState({}), overrides: { 'food-2': 'unknown-shop' } }
@@ -106,17 +106,18 @@ test('an empty shop directory yields only walking stops without allocating money
   assert.ok(plan.stops.every(stop => stop.kind === 'walk'))
 })
 
-test('the chosen shop is applied exactly and invalid choices cannot change another category', () => {
+test('replacement accepts every zone and intentional repeated visits', () => {
   const state = createPlanState({ interest: 'food', duration: 'full' }, 10)
   const plan = buildTripPlan(state, shops)
   const food = plan.stops.filter(stop => stop.kind === 'food')
-  const choices = getTripShopChoices(state, food[0].id, shops)
-  assert.ok(!choices.some(shop => shop.id === food[1].shopId), 'do not offer a shop used by another stop')
-  const chosen = choices.find(shop => shop.id !== food[0].shopId)
-  const changed = selectTripShop(state, food[0].id, chosen.id, shops)
-  assert.equal(buildTripPlan(changed, shops).stops.find(stop => stop.id === food[0].id).shopId, chosen.id)
+  assert.equal(getTripShopChoices(state, food[0].id, shops).length, shops.length)
   const cafe = shops.find(shop => shop.zone === 'cafe')
-  assert.deepEqual(selectTripShop(state, food[0].id, cafe.id, shops), state)
+  const changed = selectTripShop(state, food[0].id, cafe.id, shops)
+  const actual = buildTripPlan(changed, shops).stops.find(stop => stop.id === food[0].id)
+  assert.equal(actual.shopId, cafe.id)
+  assert.equal(actual.kind, 'cafe')
+  assert.equal(actual.minutes, food[0].minutes)
+  assert.equal(actual.allowance, food[0].allowance)
   assert.deepEqual(selectTripShop(state, food[0].id, 'unknown-shop', shops), state)
 })
 
@@ -131,4 +132,93 @@ test('every shop has a distinct real photo file and photo attribution', () => {
     assert.ok(shop.photoSource.startsWith('https://'))
     assert.ok(shop.photoCredit.length > 3)
   }
+})
+
+test('a blank itinerary has no required categories and can contain only cafes or repeat a shop', () => {
+  let state = createBlankPlanState()
+  assert.equal(buildTripPlan(state, shops).stops.length, 0)
+  const cafe = shops.find(shop => shop.zone === 'cafe')
+  state = addTripStop(addTripStop(state, cafe.id, shops), cafe.id, shops)
+  const plan = buildTripPlan(state, shops)
+  assert.deepEqual(plan.stops.map(stop => stop.shopId), [cafe.id, cafe.id])
+  assert.ok(plan.stops.every(stop => stop.kind === 'cafe'))
+  assert.equal(new Set(plan.stops.map(stop => stop.id)).size, 2)
+  for (const stop of plan.stops) state = removeTripStop(state, stop.id, shops)
+  assert.equal(buildTripPlan(state, shops).stops.length, 0, 'even the last stop is removable')
+})
+
+test('reordering preserves each visit and recalculates all times with an arbitrary start and travel gap', () => {
+  let state = createBlankPlanState({ startTime: '09:45', budget: 650, travelMinutes: 7 })
+  state = addTripStop(addTripStop(state, shops[0].id, shops), shops[1].id, shops)
+  const before = buildTripPlan(state, shops)
+  state = updateTripStop(state, before.stops[0].id, { minutes: 63, allowance: 123 }, shops)
+  state = moveTripStop(state, before.stops[1].id, -1, shops)
+  let plan = buildTripPlan(state, shops)
+  assert.deepEqual(plan.stops.map(stop => stop.shopId), [shops[1].id, shops[0].id])
+  assert.equal(plan.start, 585)
+  assert.equal(plan.stops[1].start, plan.stops[0].end + 7)
+  assert.equal(plan.stops[1].minutes, 63)
+  assert.equal(plan.stops[1].allowance, 123)
+  state = updateTripOptions(state, { startTime: '11:17', budget: 999, travelMinutes: 0 }, shops)
+  plan = buildTripPlan(state, shops)
+  assert.equal(plan.start, 677)
+  assert.equal(plan.stops[1].start, plan.stops[0].end)
+  assert.deepEqual(plan.stops.map(stop => stop.shopId), [shops[1].id, shops[0].id])
+  assert.equal(plan.stops[1].minutes, 63)
+  assert.equal(plan.stops[1].allowance, 123)
+})
+
+test('manual plans keep late activities and over-budget choices instead of removing them', () => {
+  let state = addTripStop(createBlankPlanState({ startTime: '23:30', budget: 100 }), null, shops)
+  const id = buildTripPlan(state, shops).stops[0].id
+  state = updateTripStop(state, id, { title: 'ถ่ายภาพริมคลอง', mapQuery: 'สะพานคลองบางหลวง', minutes: 90, allowance: 250 }, shops)
+  const plan = buildTripPlan(state, shops)
+  assert.equal(plan.stops.length, 1)
+  assert.equal(plan.stops[0].title, 'ถ่ายภาพริมคลอง')
+  assert.equal(plan.stops[0].mapQuery, 'สะพานคลองบางหลวง')
+  assert.equal(plan.end, 1500)
+  assert.equal(formatPlanTime(plan.end), '01:00 (+1 วัน)')
+  assert.equal(plan.allocatedBudget, 250)
+  assert.ok(plan.notes.some(note => note.includes('เกินงบ')))
+  assert.ok(plan.notes.some(note => note.includes('18:00')))
+  const restored = parsePlanState(JSON.parse(JSON.stringify(state)))
+  assert.deepEqual(buildTripPlan(restored, shops), plan)
+})
+
+test('changing global options preserves an existing suggested itinerary exactly', () => {
+  const state = createPlanState({ interest: 'art' })
+  const before = buildTripPlan(state, shops)
+  const changed = updateTripOptions(state, { duration: 'half', budget: 77, startTime: '16:42' }, shops)
+  const after = buildTripPlan(changed, shops)
+  assert.deepEqual(after.stops.map(stop => [stop.id, stop.shopId, stop.minutes, stop.allowance]), before.stops.map(stop => [stop.id, stop.shopId, stop.minutes, stop.allowance]))
+  assert.equal(after.stops.length, before.stops.length)
+  assert.equal(after.start, 1002)
+  assert.ok(after.end > 1080)
+})
+
+test('explicit budget redistribution is opt-in and respects custom activity costs', () => {
+  let state = addTripStop(addTripStop(createBlankPlanState({ budget: 650 }), shops[0].id, shops), null, shops)
+  const custom = buildTripPlan(state, shops).stops[1]
+  state = updateTripStop(state, custom.id, { allowance: 100 }, shops)
+  assert.equal(buildTripPlan(state, shops).allocatedBudget, 100)
+  state = redistributeTripBudget(state, shops)
+  const plan = buildTripPlan(state, shops)
+  assert.equal(plan.allocatedBudget, 650)
+  assert.equal(plan.stops[0].allowance, 550)
+  assert.equal(plan.stops[1].allowance, 100)
+})
+
+test('v2 links migrate and malformed custom itineraries are rejected safely', () => {
+  const old = { version: 2, options: { duration: 'half', interest: 'chill', startTime: '12:00', budget: 300 }, seed: 7, overrides: {} }
+  const migrated = parsePlanState(old)
+  assert.equal(migrated.version, 3)
+  assert.equal(migrated.options.travelMinutes, 10)
+  validate(buildTripPlan(migrated, shops))
+  const valid = addTripStop(createBlankPlanState(), shops[0].id, shops)
+  assert.equal(parsePlanState({ ...valid, customStops: [valid.customStops[0], valid.customStops[0]] }), null)
+  assert.equal(parsePlanState({ ...valid, customStops: [{ ...valid.customStops[0], minutes: Infinity }] }), null)
+  assert.equal(parsePlanState({ ...valid, customStops: [{ ...valid.customStops[0], id: '<script>' }] }), null)
+  const unknown = { ...valid, customStops: [{ ...valid.customStops[0], shopId: 'unknown-shop' }] }
+  assert.equal(buildTripPlan(unknown, shops).stops.length, 0)
+  assert.ok(buildTripPlan(unknown, shops).notes.length)
 })
