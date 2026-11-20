@@ -3,13 +3,14 @@ import { Bookmark, Menu, X } from '@lucide/vue'
 const props = defineProps<{ saved?: boolean }>()
 const emit = defineEmits<{ showSaved: [] }>()
 const menuOpen = ref(false)
+const { asset } = useSiteUrls()
 </script>
 
 <template>
   <header class="site-header">
     <div class="shell header-inner">
       <NuxtLink to="/" class="brand" aria-label="บางหลวง วันว่าง หน้าหลัก">
-        <img src="/favicon.svg" width="43" height="43" alt="" />
+        <img :src="asset('/favicon.svg')" width="43" height="43" alt="" />
         <span>บางหลวง<span class="brand-sub">วันว่าง / WANDER</span></span>
       </NuxtLink>
       <nav class="desktop-nav" aria-label="เมนูหลัก">

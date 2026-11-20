@@ -18,6 +18,14 @@ npm run build
 
 ผลลัพธ์สำหรับ static hosting อยู่ที่ `.output/public/`
 
+## Deploy บน GitHub Pages
+
+Workflow `.github/workflows/github-pages.yml` จะตรวจ TypeScript สร้างเว็บแบบ static และ deploy เมื่อ push เข้า `main` หรือสั่ง Run workflow ในหน้า Actions โดยใช้ Node.js ตาม `.nvmrc`
+
+เปิด Settings → Pages → Build and deployment → Source เป็น GitHub Actions ก่อนใช้งานครั้งแรก GitHub Pages สำหรับ private repository ขึ้นอยู่กับแผนบัญชี GitHub
+
+พาธเว็บของ repo นี้คือ `https://dxrkfey.github.io/travel-bangphai/` Workflow ใช้ base path และ origin จาก GitHub Pages เพื่อให้ลิงก์ รูป และภาพแชร์ทำงานภายใต้พาธของ repo
+
 ## แก้ไขข้อมูล
 
 - `app/data/places.ts` ข้อมูลจุดแวะและแหล่งอ้างอิง

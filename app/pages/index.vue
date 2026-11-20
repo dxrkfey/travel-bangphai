@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { MapPin, Clock3, TrainFront, Coffee, Palette, Footprints, Bookmark, Check, X, Share2, Leaf, ChevronDown, Navigation, Sun, Heart, Ticket, CalendarDays, Sparkles } from '@lucide/vue'
 import { places, zones, mapsUrl, placeImageAlt } from '~/data/places'
+const { asset, absoluteAsset } = useSiteUrls()
 
 type Duration = 'half' | 'full'
 type Interest = 'chill' | 'art'
@@ -56,7 +57,7 @@ onMounted(() => {
   if (['chill', 'art'].includes(params.get('interest') || '')) interest.value = params.get('interest') as Interest
 })
 onUnmounted(() => clearTimeout(noticeTimer))
-useSeoMeta({ ogTitle: 'บางหลวง วันว่าง | วันดี ๆ ไม่ต้องไปไกล', ogDescription: 'เดินเล่น ทำงานคราฟต์ จิบกาแฟ เลือกแพลนคลองบางหลวงในแบบของคุณ', ogImage: 'https://khlong-bang-luang-daytrip.chalky-ape-7056.chatgpt.site/images/canal.jpg', twitterCard: 'summary_large_image' })
+useSeoMeta({ ogTitle: 'บางหลวง วันว่าง | วันดี ๆ ไม่ต้องไปไกล', ogDescription: 'เดินเล่น ทำงานคราฟต์ จิบกาแฟ เลือกแพลนคลองบางหลวงในแบบของคุณ', ogImage: absoluteAsset('/images/canal.jpg'), twitterCard: 'summary_large_image' })
 </script>
 
 <template>
@@ -74,7 +75,7 @@ useSeoMeta({ ogTitle: 'บางหลวง วันว่าง | วัน�
           <div class="hero-note"><Leaf :size="15" /> เที่ยวง่ายด้วย MRT · ใช้เวลาแค่ครึ่งวันก็ได้</div>
         </div>
         <div class="hero-visual">
-          <img class="hero-photo" src="/images/canal.jpg" alt="ผู้คนนั่งชมวิวคลองบางหลวงจากบ้านศิลปิน มีเรือผ่านหน้าบ้านไม้ริมคลอง" width="1200" height="1000" fetchpriority="high" />
+          <img class="hero-photo" :src="asset('/images/canal.jpg')" alt="ผู้คนนั่งชมวิวคลองบางหลวงจากบ้านศิลปิน มีเรือผ่านหน้าบ้านไม้ริมคลอง" width="1200" height="1000" fetchpriority="high" />
           <div class="photo-caption"><span>ชีวิตช้า ๆ ริมคลอง</span><span>KHLONG BANG LUANG</span></div>
           <div class="photo-sticker"><Heart :size="23" :stroke-width="1.4" /><span>พักใจ<br>ใกล้บ้าน</span></div>
           <div class="photo-location"><MapPin :size="16" /> มุมโปรดที่บ้านศิลปิน</div>
@@ -89,7 +90,7 @@ useSeoMeta({ ogTitle: 'บางหลวง วันว่าง | วัน�
         <div class="zone-list" aria-live="polite">
           <section v-for="zone in visibleZones" :id="`zone-${zone.id}`" :key="zone.id" class="travel-zone" :aria-labelledby="`zone-title-${zone.id}`">
             <div class="zone-heading"><span class="zone-icon"><Coffee v-if="zone.id === 'cafe'" :size="23" /><Palette v-else-if="zone.id === 'workshop'" :size="23" /><Ticket v-else :size="23" /></span><div><p class="eyebrow">{{ zone.english }}</p><h3 :id="`zone-title-${zone.id}`">โซน{{ zone.title }}</h3><p class="zone-description">{{ zone.description }}</p></div></div>
-            <div class="zone-places"><NuxtLink v-for="place in zone.places" :key="place.slug" :to="`/places/${place.slug}`" class="place-card"><div class="place-image-wrap"><img :src="place.image" :alt="placeImageAlt(place)" loading="lazy" width="600" height="450" /><span class="place-tag">{{ place.category }}</span><span v-if="zone.id === 'food'" class="illustration-label">ภาพประกอบ</span></div><div class="place-card-content"><h3>{{ place.title }}</h3><p>{{ place.subtitle }}</p><span class="place-duration"><Clock3 :size="14" /> {{ place.duration }}</span><span class="zone-place-detail">ดูรายละเอียดและพิกัด</span></div></NuxtLink></div>
+            <div class="zone-places"><NuxtLink v-for="place in zone.places" :key="place.slug" :to="`/places/${place.slug}`" class="place-card"><div class="place-image-wrap"><img :src="asset(place.image)" :alt="placeImageAlt(place)" loading="lazy" width="600" height="450" /><span class="place-tag">{{ place.category }}</span><span v-if="zone.id === 'food'" class="illustration-label">ภาพประกอบ</span></div><div class="place-card-content"><h3>{{ place.title }}</h3><p>{{ place.subtitle }}</p><span class="place-duration"><Clock3 :size="14" /> {{ place.duration }}</span><span class="zone-place-detail">ดูรายละเอียดและพิกัด</span></div></NuxtLink></div>
           </section>
         </div>
         <aside class="between-zones"><p><Footprints :size="18" /> เดินเล่นระหว่างโซน</p><div><NuxtLink v-for="place in nearbyPlaces" :key="place.slug" :to="`/places/${place.slug}`"><MapPin :size="16" />{{ place.title }}</NuxtLink></div></aside>
