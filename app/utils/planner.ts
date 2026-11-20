@@ -169,19 +169,17 @@ export function buildTripPlan(input: PlanState, available: readonly Shop[]): Tri
   return { state, stops, start, end: cursor, totalMinutes: cursor - start, allocatedBudget: paid.reduce((sum, stop) => sum + stop.allowance, 0), notes }
 }
 
-export function swapTripShop(input: PlanState, slotId: string, available: readonly Shop[]): PlanState {
+export function getTripShopChoices(input: PlanState, slotId: string, available: readonly Shop[]): Shop[] {
   const plan = buildTripPlan(input, available)
   const stop = plan.stops.find(item => item.id === slotId)
-  if (!stop?.shopId || !validKinds.includes(stop.kind)) return plan.state
+  if (!stop?.shopId || !validKinds.includes(stop.kind)) return []
   const usedElsewhere = new Set(plan.stops.filter(item => item.id !== slotId).map(item => item.shopId))
-  const pool = shopPool(stop.kind, available)
-  const current = pool.findIndex(shop => shop.id === stop.shopId)
-  for (let offset = 1; offset < pool.length; offset++) {
-    const next = pool[(current + offset) % pool.length]!
-    if (!usedElsewhere.has(next.id)) {
-      const overrides = Object.fromEntries(plan.stops.filter(item => item.shopId).map(item => [item.id, item.id === slotId ? next.id : item.shopId!]))
-      return { ...plan.state, overrides }
-    }
-  }
-  return plan.state
+  return shopPool(stop.kind, available).filter(shop => !usedElsewhere.has(shop.id))
+}
+
+export function selectTripShop(input: PlanState, slotId: string, shopId: string, available: readonly Shop[]): PlanState {
+  const plan = buildTripPlan(input, available)
+  if (!getTripShopChoices(plan.state, slotId, available).some(shop => shop.id === shopId)) return plan.state
+  const overrides = Object.fromEntries(plan.stops.filter(item => item.shopId).map(item => [item.id, item.id === slotId ? shopId : item.shopId!]))
+  return { ...plan.state, overrides }
 }

@@ -1,7 +1,8 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
+import fs from 'node:fs'
 import { shops } from '../app/data/shops.ts'
-import { buildTripPlan, createPlanState, parsePlanState, startTimes, swapTripShop } from '../app/utils/planner.ts'
+import { buildTripPlan, createPlanState, parsePlanState, getTripShopChoices, selectTripShop, startTimes } from '../app/utils/planner.ts'
 
 const shopIds = new Set(shops.map(shop => shop.id))
 function validate(plan) {
@@ -65,14 +66,17 @@ test('replacing a shop preserves other stops, timing and budget', () => {
     for (let iteration = 0; iteration < 3; iteration++) {
     const before = buildTripPlan(state, shops)
     for (const stop of before.stops.filter(stop => stop.shopId)) {
-      const changed = swapTripShop(state, stop.id, shops)
+      const alternative = getTripShopChoices(state, stop.id, shops).find(shop => shop.id !== stop.shopId)
+      const changed = selectTripShop(state, stop.id, alternative.id, shops)
       const after = buildTripPlan(changed, shops)
       validate(after)
       assert.notEqual(after.stops.find(item => item.id === stop.id).shopId, stop.shopId)
       for (const other of before.stops.filter(item => item.id !== stop.id)) assert.deepEqual(after.stops.find(item => item.id === other.id), other)
       assert.equal(after.end, before.end)
     }
-    state = swapTripShop(state, before.stops.find(stop => stop.shopId).id, shops)
+    const first = before.stops.find(stop => stop.shopId)
+    const alternative = getTripShopChoices(state, first.id, shops).find(shop => shop.id !== first.shopId)
+    state = selectTripShop(state, first.id, alternative.id, shops)
     }
   }
 })
@@ -80,7 +84,7 @@ test('replacing a shop preserves other stops, timing and budget', () => {
 test('saved and shared states restore the exact shop choices', () => {
   let state = createPlanState({ interest: 'art', startTime: '13:00', budget: 800 }, 100)
   const stop = buildTripPlan(state, shops).stops.find(item => item.kind === 'workshop')
-  state = swapTripShop(state, stop.id, shops)
+  state = selectTripShop(state, stop.id, getTripShopChoices(state, stop.id, shops).find(shop => shop.id !== stop.shopId).id, shops)
   const params = new URLSearchParams({ trip: JSON.stringify(state) })
   const restored = parsePlanState(JSON.parse(new URLSearchParams(params.toString()).get('trip')))
   assert.deepEqual(buildTripPlan(restored, shops), buildTripPlan(state, shops))
@@ -100,4 +104,31 @@ test('an empty shop directory yields only walking stops without allocating money
   const plan = buildTripPlan(createPlanState({}), [])
   validate(plan)
   assert.ok(plan.stops.every(stop => stop.kind === 'walk'))
+})
+
+test('the chosen shop is applied exactly and invalid choices cannot change another category', () => {
+  const state = createPlanState({ interest: 'food', duration: 'full' }, 10)
+  const plan = buildTripPlan(state, shops)
+  const food = plan.stops.filter(stop => stop.kind === 'food')
+  const choices = getTripShopChoices(state, food[0].id, shops)
+  assert.ok(!choices.some(shop => shop.id === food[1].shopId), 'do not offer a shop used by another stop')
+  const chosen = choices.find(shop => shop.id !== food[0].shopId)
+  const changed = selectTripShop(state, food[0].id, chosen.id, shops)
+  assert.equal(buildTripPlan(changed, shops).stops.find(stop => stop.id === food[0].id).shopId, chosen.id)
+  const cafe = shops.find(shop => shop.zone === 'cafe')
+  assert.deepEqual(selectTripShop(state, food[0].id, cafe.id, shops), state)
+  assert.deepEqual(selectTripShop(state, food[0].id, 'unknown-shop', shops), state)
+})
+
+test('every shop has a distinct real photo file and photo attribution', () => {
+  assert.equal(new Set(shops.map(shop => shop.image)).size, shops.length)
+  for (const shop of shops) {
+    const file = new URL(`../public${shop.image}`, import.meta.url)
+    assert.ok(fs.statSync(file).size > 1024, `Photo missing for ${shop.name}`)
+    const bytes = fs.readFileSync(file)
+    assert.equal(bytes[0], 0xff)
+    assert.equal(bytes[1], 0xd8)
+    assert.ok(shop.photoSource.startsWith('https://'))
+    assert.ok(shop.photoCredit.length > 3)
+  }
 })

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { MapPin, Clock3, TrainFront, Palette, Footprints, Leaf, ChevronDown, Navigation, Heart, CalendarDays } from '@lucide/vue'
+import { Asterisk, MapPin, Clock3, TrainFront, Palette, Footprints, Leaf, ChevronDown, Navigation, Heart, CalendarDays } from '@lucide/vue'
 import { places, mapsUrl } from '~/data/places'
 const { asset, absoluteAsset } = useSiteUrls()
 const nearbyPlaces = places.filter(place => place.slug === 'artist-house' || place.slug === 'canal-walk')
@@ -17,10 +17,10 @@ useSeoMeta({ ogTitle: 'บางหลวง วันว่าง | วัน�
       <section id="discover" class="hero shell">
         <div class="hero-copy">
           <div class="eyebrow"><span class="short-line"></span> A LITTLE ESCAPE IN BANGKOK</div>
-          <h1>วันดี ๆ<br>ไม่ต้อง<span class="serif-accent">ไปไกล</span><span class="hero-sun">✳</span></h1>
+          <h1>วันดี ๆ<br>ไม่ต้อง<span class="serif-accent">ไปไกล</span><Asterisk class="hero-sun" :size="36" :stroke-width="1.4" aria-hidden="true" focusable="false" /></h1>
           <p class="hero-location"><MapPin :size="19" /> คลองบางหลวง · กรุงเทพฯ</p>
           <p class="hero-description">ชวนมาพักใจในชุมชนเล็ก ๆ ริมคลอง<br>เดินเล่น ทำงานคราฟต์ จิบกาแฟ<br>แล้วปล่อยให้วันว่าง… เดินช้าลงหน่อย</p>
-          <div class="hero-buttons"><a class="button button-primary" href="#planner"><CalendarDays :size="18" />จัดวันว่างของฉัน</a><a href="#places" class="text-link">มีอะไรให้แวะบ้าง</a></div>
+          <div class="hero-buttons"><a class="button button-primary" href="#planner"><CalendarDays :size="18" />จัดทริปให้ฉัน</a><a href="#places" class="text-link">ดูร้านทั้งหมด</a></div>
           <div class="hero-note"><Leaf :size="15" /> เที่ยวง่ายด้วย MRT · ใช้เวลาแค่ครึ่งวันก็ได้</div>
         </div>
         <div class="hero-visual">
@@ -33,13 +33,13 @@ useSeoMeta({ ogTitle: 'บางหลวง วันว่าง | วัน�
 
       <section class="intro-strip"><div class="shell strip-inner"><p>ไม่ต้องลางาน ไม่ต้องจัดกระเป๋า<br><strong>แค่พาตัวเองออกมาเจออะไรน่ารัก ๆ</strong></p><div><TrainFront /><span><strong>MRT บางไผ่</strong><small>สายสีน้ำเงิน · ทางออก 4</small></span></div><div><Clock3 /><span><strong>ครึ่งวันก็เที่ยวได้</strong><small>เลือกจังหวะที่พอดีกับเรา</small></span></div><div><Palette /><span><strong>ศิลปะ & วิถีริมคลอง</strong><small>ของธรรมดาที่ทำให้วันพิเศษ</small></span></div></div></section>
 
+      <AutoTripPlanner ref="tripPlanner" @saved-change="hasSaved = $event" />
+
       <section id="places" class="section shell">
         <div class="section-heading"><div><p class="eyebrow">LITTLE PLACES, LOVELY MOMENTS</p><h2>รายชื่อร้าน<span class="orange">ทั้งหมด</span></h2></div><p>เลือกโซนที่ชอบ หรือค้นหาชื่อร้าน<br>แล้วปักหมุดวันว่างของคุณ</p></div>
         <ShopDirectory />
         <aside class="between-zones"><p><Footprints :size="18" /> เดินเล่นระหว่างโซน</p><div><NuxtLink v-for="place in nearbyPlaces" :key="place.slug" :to="`/places/${place.slug}`"><MapPin :size="16" />{{ place.title }}</NuxtLink></div></aside>
       </section>
-
-      <AutoTripPlanner ref="tripPlanner" @saved-change="hasSaved = $event" />
 
       <section id="getting-here" class="section shell travel-grid"><div class="travel-copy"><p class="eyebrow">CLOSER THAN YOU THINK</p><h2>เริ่มต้นที่บางไผ่<br>ไปต่อที่<span class="orange">บางหลวง</span></h2><p>ไม่ต้องมีรถ ก็มีวันดี ๆ ริมคลองได้<br>ปักหมุดบ้านศิลปิน แล้วค่อย ๆ เดินเข้าชุมชนกัน</p><a :href="mapsUrl('บ้านศิลปิน คลองบางหลวง')" class="button button-primary" target="_blank" rel="noopener noreferrer"><Navigation :size="17" />เปิดเส้นทางใน Google Maps</a><a class="source-link" href="https://www.artisthousebangkok.com/th/locations-contect" target="_blank" rel="noopener noreferrer">ข้อมูลการเดินทางจากบ้านศิลปิน</a></div><div class="travel-details"><div class="transport-line"><span class="transport-icon"><TrainFront :size="23" /></span><div><h3>MRT สายสีน้ำเงิน</h3><p>ลงสถานีบางไผ่ (BL33) ทางออก 4<br>เข้าซอยเพชรเกษม 20 เดินประมาณ 900 เมตร<br>หรือใช้มอเตอร์ไซค์รับจ้างแล้วเดินต่อเข้าริมคลอง</p></div><span class="mrt-pill">BL33</span></div><div class="travel-facts"><div><Clock3 :size="20" /><h3>ช่วงเวลาน่าแวะ</h3><p>บ้านศิลปินเปิด 10.00–18.00 น.<br>เริ่มช่วงสาย มีเวลาเดินและทำกิจกรรม</p></div><div><Footprints :size="20" /><h3>เดินสบาย เตรียมไว้หน่อย</h3><p>รองเท้าเดินสะดวก ร่ม และน้ำดื่ม<br>เผื่อเงินสดสำหรับร้านเล็ก ๆ ในชุมชน</p></div></div><div class="travel-callout"><Heart :size="18" /><p>ที่นี่เป็นบ้านของคนในชุมชนด้วยนะ<br>ช่วยกันเดินเบา ๆ พูดพอดี ๆ และขออนุญาตก่อนถ่ายภาพคน</p></div></div></section>
 

@@ -1,3 +1,5 @@
+import { shopPhotos } from './shopPhotos.ts'
+
 export type ShopZone = 'food' | 'cafe' | 'workshop'
 
 export interface Shop {
@@ -9,6 +11,9 @@ export interface Shop {
   sourceName: string
   detail?: string
   foodType?: 'meal' | 'snack'
+  image: string
+  photoSource: string
+  photoCredit: string
 }
 
 const marketGuide = 'https://super.co.th/review/review-khlong-bang-luang/'
@@ -21,7 +26,7 @@ export const shopZones = [
 ] as const
 
 // One entry per business; activities and cafe corners are not counted as separate shops.
-export const shops: readonly Shop[] = [
+const shopEntries: readonly Omit<Shop, 'image' | 'photoSource' | 'photoCredit'>[] = [
   { id: 'khun-aoi', name: 'ครัวคุณอ๋อย', zone: 'food', summary: 'อาหารไทย จานเดียว และกับข้าว', source: 'https://www.wongnai.com/articles/khun-aoi-kitchen-gsb', sourceName: 'Wongnai · สัมภาษณ์ร้าน', detail: '/places/khun-aoi-kitchen' },
   { id: 'plern-jitt', name: 'บ้านเพลินจิตต์ ณ คลองบางหลวง', zone: 'food', summary: 'ผัดไทยและขนมไทย', source: 'https://www.ryoiireview.com/restaurant/view/19967', sourceName: 'Ryoii · ข้อมูลร้าน' },
   { id: 'jan-dara', name: 'ก๋วยเตี๋ยวจานดารา', zone: 'food', summary: 'ก๋วยเตี๋ยวน้ำตก', ...marketSource },
@@ -40,3 +45,10 @@ export const shops: readonly Shop[] = [
   { id: 'artist-house', name: 'บ้านศิลปินคลองบางหลวง', zone: 'workshop', summary: 'ร้อยลูกปัด วาดภาพ และมีมุมคาเฟ่', source: 'https://www.artisthousebangkok.com/th/art-workshop', sourceName: 'เว็บไซต์บ้านศิลปิน', detail: '/places/artist-house' },
   { id: 'phueng-sin', name: 'บ้านพึ่งศิลป์', zone: 'workshop', summary: 'งานเพนต์ ร้อยลูกปัด และเครื่องดื่ม', source: 'https://travel.trueid.net/detail/6pOxrAK1GgYJ', sourceName: 'TrueID · เที่ยวคลองบางหลวง' }
 ]
+
+
+export const shops: readonly Shop[] = shopEntries.map(shop => {
+  const photo = shopPhotos[shop.id]
+  if (!photo) throw new Error(`Missing photo attribution for ${shop.id}`)
+  return { ...shop, image: photo.image, photoSource: photo.source, photoCredit: photo.credit }
+})
