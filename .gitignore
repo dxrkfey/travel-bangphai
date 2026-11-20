@@ -1,0 +1,12 @@
+node_modules/
+.nuxt/
+.output/
+.sites-runtime/
+*.log
+.env
+
+dist/
+.openai/
+.vercel/
+.env.*
+!.env.example
